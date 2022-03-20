@@ -62,6 +62,16 @@
                 android:textSize="13dp"
                 android:text="@{songInfo.album}"
                 android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/album_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:adjustViewBounds="true"
+                android:maxHeight="200dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{songInfo.image}" />
         </LinearLayout>
     </RelativeLayout>
 </layout>
