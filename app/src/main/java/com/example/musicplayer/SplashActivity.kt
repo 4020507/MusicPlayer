@@ -12,7 +12,7 @@ class SplashActivity:AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         Glide.with(this)
-            .load(R.drawable.splash_image)
+            .load("https://grepp-cloudfront.s3.ap-northeast-2.amazonaws.com/programmers_imgs/competition-imgs/2020-Flo-challenge/FLO_Splash-Img3x(1242x2688).png")
             .into(findViewById(R.id.splash))
 
         Handler().postDelayed({
