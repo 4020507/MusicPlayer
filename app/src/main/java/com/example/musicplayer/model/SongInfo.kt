@@ -10,7 +10,7 @@ data class SongInfo(
     @SerializedName("title")
     val title:String,
     @SerializedName("duration")
-    val duration: Long,
+    val duration: Int,
     @SerializedName("image")
     val image: String,
     @SerializedName("file")

@@ -64,14 +64,59 @@
                 android:textColor="@color/black" />
 
             <ImageView
-                android:id="@+id/album_img"
+                android:id="@+id/image"
+                android:layout_width="300dp"
+                android:layout_height="400dp"
+                android:layout_marginTop="20dp"
+                app:imageUrl="@{songInfo.image}" />
+
+            <RelativeLayout
+                android:id="@+id/seekBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:adjustViewBounds="true"
-                android:maxHeight="200dp"
-                android:scaleType="centerCrop"
-                app:imageUrl="@{songInfo.image}" />
+                >
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    />
+                <TextView
+                    android:id="@+id/playingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seekBar"
+                    android:layout_marginTop="3dp"
+                    android:text="00:00"
+                    />
+                <TextView
+                    android:id="@+id/TotalTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seekBar"
+                    android:layout_marginTop="3dp"
+                    app:songTime="@{songInfo.duration}"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/playBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/play"
+                android:layout_marginTop="5dp"
+                android:visibility="invisible"
+                />
+            <ImageView
+                android:id="@+id/pauseBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/pause"
+                android:layout_marginTop="-40dp"
+                android:visibility="visible"
+                />
         </LinearLayout>
     </RelativeLayout>
 </layout>
