@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -51,16 +52,57 @@ class MainActivity : AppCompatActivity() {
         val pauseBtn = findViewById<ImageView>(R.id.pauseBtn)
         val totalTime = findViewById<TextView>(R.id.TotalTime)
 
+        //seekbar setting
+        val seekBar = findViewById<SeekBar>(R.id.seekBar)
+        val playingTime = findViewById<TextView>(R.id.playingTime)
+        var duration by Delegates.notNull<String>()
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            var progress: Int?= null
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                if(p2) {
+                    progress = p1
+                    playingTime.text = milisecondsToTime((p1.toLong()/1000.toLong()))
+                    seekBar.setProgress(p1)
+                }
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                progress?.let { mediaPlayer.seekTo(it) }
+                if(mediaPlayer.isPlaying){
+                    mediaPlayer.seekTo(seekBar.progress)
+                }
+            }
+
+        })
+
+        class MusicThread : Thread() {
+            override fun run() {
+                while(mediaPlayer.isPlaying){
+                    SystemClock.sleep(100)
+                    runOnUiThread {
+                        val currTime = mediaPlayer.currentPosition
+                        seekBar.setProgress(currTime)
+                        playingTime.text = milisecondsToTime(currTime.toLong()/1000.toLong())
+                    }
+                }
+            }
+        }
+
         fun playMusic(){
             playBtn.visibility = INVISIBLE
             pauseBtn.visibility = VISIBLE
             mediaPlayer.start()
+            MusicThread().start()
         }
 
         fun pauseMusic(){
             playBtn.visibility = VISIBLE
             pauseBtn.visibility = INVISIBLE
             mediaPlayer.pause()
+            MusicThread().interrupt()
         }
 
         playBtn.setOnClickListener{
@@ -70,34 +112,6 @@ class MainActivity : AppCompatActivity() {
         pauseBtn.setOnClickListener {
             pauseMusic()
         }
-
-        //seekbar setting
-        val seekBar = findViewById<SeekBar>(R.id.seekBar)
-        val playingTime = findViewById<TextView>(R.id.playingTime)
-        var duration by Delegates.notNull<String>()
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            var progress: Int?= null
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if(p2) {
-                    val converted = timeToMiliseconds((duration.toInt() * p1 / 100).toString())
-                    progress = p1
-                    playingTime.text = milisecondsToTime(converted)
-                    seekBar.setProgress(p1)
-                }
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onStopTrackingTouch(p0: SeekBar?) {
-                mediaPlayer.seekTo(progress!!)
-                if(mediaPlayer.isPlaying){
-                    mediaPlayer.seekTo(seekBar.progress)
-                }
-            }
-
-        })
         service.getSongInfo().enqueue(object:Callback<SongInfo>{
             override fun onResponse(call: Call<SongInfo>, response: Response<SongInfo>) {
                 Log.d("retrofit: ",response.body().toString())
@@ -123,6 +137,9 @@ class MainActivity : AppCompatActivity() {
                                 prepare()
                                 playMusic()
                             }
+                            seekBar.max = mediaPlayer.duration
+                            totalTime.text = milisecondsToTime(mediaPlayer.duration.toLong())
+
                         }
                     }
                 }
