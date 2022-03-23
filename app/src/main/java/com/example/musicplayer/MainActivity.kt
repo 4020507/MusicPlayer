@@ -7,14 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.musicplayer.databinding.ActivityMainBinding
+import com.example.musicplayer.model.Lyric
 import com.example.musicplayer.model.SongInfo
 import org.w3c.dom.Text
 import retrofit2.Call
@@ -56,6 +60,15 @@ class MainActivity : AppCompatActivity() {
         val seekBar = findViewById<SeekBar>(R.id.seekBar)
         val playingTime = findViewById<TextView>(R.id.playingTime)
         var duration by Delegates.notNull<String>()
+
+        //lyrics setting
+        var lyricList: MutableList<Lyric> = mutableListOf()
+        var index = -1
+        val lyricAdapter = LyricAdapter(this,lyricList)
+        val recyclerView = findViewById<RecyclerView>(R.id.lyrics)
+        val image = findViewById<ImageView>(R.id.image)
+        var check = false
+
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             var progress: Int?= null
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -74,9 +87,25 @@ class MainActivity : AppCompatActivity() {
                 if(mediaPlayer.isPlaying){
                     mediaPlayer.seekTo(seekBar.progress)
                 }
+                if(index >= 0) lyricList[index].highlighted = false
             }
 
         })
+
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        lyricAdapter.clicked = object : LyricAdapter.Clicked{
+            override fun onClick(view: View, time: Int) {
+                if(check && image.visibility == 8){
+                    playingTime.text = milisecondsToTime(time.toLong()/1000.toLong())
+                    mediaPlayer.seekTo(time)
+                }else{
+                    //
+                }
+            }
+
+        }
+        recyclerView.adapter = lyricAdapter
 
         class MusicThread : Thread() {
             override fun run() {
@@ -86,6 +115,17 @@ class MainActivity : AppCompatActivity() {
                         val currTime = mediaPlayer.currentPosition
                         seekBar.setProgress(currTime)
                         playingTime.text = milisecondsToTime(currTime.toLong()/1000.toLong())
+
+                        var temp = currLyricIndex(lyricList,mediaPlayer.currentPosition)
+
+                        if(index != temp){
+                            lyricList[temp].highlighted = true
+
+                            if(index >= 0)
+                                lyricList[index].highlighted = false
+                            index = temp
+                            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(temp,recyclerView.height/3)
+                        }
                     }
                 }
             }
@@ -137,6 +177,13 @@ class MainActivity : AppCompatActivity() {
                                 prepare()
                                 playMusic()
                             }
+
+                            for(it in body.lyrics.split("\n")){
+                                var lyric = Lyric()
+                                lyric.time = timeToMiliseconds(it)
+                                lyric.lyric = it.split("]")[1]
+                                lyricList.add(lyric)
+                            }
                             seekBar.max = mediaPlayer.duration
                             totalTime.text = milisecondsToTime(mediaPlayer.duration.toLong())
 
@@ -150,6 +197,8 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+
 
     }
 }
@@ -167,11 +216,32 @@ fun milisecondsToTime(miliseconds:Long): String {
     return returnStr
 }
 
-fun timeToMiliseconds(time:String): Long {
+fun timeToMiliseconds(time:String): Int {
     val timeFormat = time.split("[")[1].split("]")[0].split(":")
     val min = timeFormat[0].toInt()
     val sec = timeFormat[1].toInt()
     val msec = timeFormat[2].toInt()
 
-    return (min * 60000 + sec * 1000 + msec).toLong()
+    return (min * 60000 + sec * 1000 + msec)
+}
+
+fun currLyricIndex(lyric: List<Lyric>, index:Int):Int{
+    var start = 0
+    var mid = 0
+    var end = lyric.size - 1
+
+    if(index >= lyric[end].time) return end
+
+    while(end > start){
+        mid = (start+end)/2
+
+        if(lyric[mid].time >= index ){
+            end = mid
+        }
+        else
+            start = mid + 1
+    }
+
+    if(end == 0) return 0
+    else    return end - 1
 }

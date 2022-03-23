@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:ellipsize="marquee"
+                android:layout_marginTop="10dp"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:text="@{songInfo.title}"
                 android:textColor="@color/black"
@@ -66,9 +67,16 @@
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="300dp"
-                android:layout_height="400dp"
+                android:layout_height="300dp"
                 android:layout_marginTop="20dp"
                 app:imageUrl="@{songInfo.image}" />
+            
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lyrics"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                />
 
             <RelativeLayout
                 android:id="@+id/seekBarLayout"
@@ -79,14 +87,14 @@
                     android:id="@+id/seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="10dp"
                     />
                 <TextView
                     android:id="@+id/playingTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/seekBar"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="10dp"
                     android:text="00:00"
                     android:textColor="@color/black"
                     />
@@ -95,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/seekBar"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="10dp"
                     app:songTime="@{songInfo.duration}"
                     android:layout_alignParentRight="true"
                     android:textColor="@color/black"
@@ -108,7 +116,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/play"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="20dp"
                 android:visibility="invisible"
                 />
             <ImageView
