@@ -1,5 +1,6 @@
 package com.example.musicplayer
 
+import android.app.ActionBar
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -8,11 +9,10 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
-import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.TextView
+import android.view.View.*
+import android.view.ViewGroup
+import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -94,19 +94,56 @@ class MainActivity : AppCompatActivity() {
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
+        val params = recyclerView.layoutParams
+        params.height = 350
+        recyclerView.layoutParams = params
+        val closeBtn = findViewById<Button>(R.id.closeBtn)
+        val toggleBtn = findViewById<Button>(R.id.toggleBtn)
         lyricAdapter.clicked = object : LyricAdapter.Clicked{
             override fun onClick(view: View, time: Int) {
-                if(check && image.visibility == 8){
+                Log.d("","hi")
+
+                if(closeBtn.visibility == GONE)
+                {
+                    closeBtn.visibility = VISIBLE
+                    toggleBtn.visibility = VISIBLE
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT
+                    recyclerView.layoutParams = params
+                    title.visibility = GONE
+                    singer.visibility = GONE
+                    album.visibility = GONE
+                    image.visibility = GONE
+                }
+                else
+                {
+                    closeBtn.visibility = GONE
+                    toggleBtn.visibility = GONE
+                    params.height = 350
+                    recyclerView.layoutParams = params
+                    title.visibility = VISIBLE
+                    singer.visibility = VISIBLE
+                    album.visibility = VISIBLE
+                    image.visibility = VISIBLE
+                }
+                /*if(check && image.visibility == 8){
                     playingTime.text = milisecondsToTime(time.toLong()/1000.toLong())
                     mediaPlayer.seekTo(time)
                 }else{
                     //
-                }
+                    check = false
+                    params.height = 350
+                    recyclerView.layoutParams = params
+                }*/
             }
 
         }
         recyclerView.adapter = lyricAdapter
 
+        /*image.setOnClickListener {
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+            recyclerView.layoutParams = params
+            image.visibility = GONE
+        }*/
         class MusicThread : Thread() {
             override fun run() {
                 while(mediaPlayer.isPlaying){
@@ -197,8 +234,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-
-
 
     }
 }

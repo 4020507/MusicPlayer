@@ -7,22 +7,26 @@
             name="songInfo"
             type="com.example.musicplayer.model.SongInfo" />
     </data>
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/fullScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        tools:context=".MainActivity">
-
-        <LinearLayout
-            android:id="@+id/song"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center"
-            android:orientation="vertical">
+        tools:context=".MainActivity"
+        android:orientation="vertical"
+        >
+        <Button
+            android:id="@+id/closeBtn"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/toggleBtn"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:visibility="gone"
+            />
 
             <TextView
                 android:id="@+id/title"
@@ -34,6 +38,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:text="@{songInfo.title}"
                 android:textColor="@color/black"
+                android:layout_gravity="center"
                 android:textSize="25dp"
                 android:textStyle="bold" />
 
@@ -42,12 +47,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_below="@+id/title"
                 android:singleLine="true"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:textSize="13dp"
+                android:layout_gravity="center"
                 android:text="@{songInfo.singer}"
                 android:textColor="@color/black" />
 
@@ -55,6 +62,7 @@
                 android:id="@+id/album"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:singleLine="true"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
@@ -69,19 +77,22 @@
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_marginTop="20dp"
+                android:layout_gravity="center"
                 app:imageUrl="@{songInfo.image}" />
-            
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lyrics"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginTop="10dp"
-                />
+                android:background="@color/white"
+                android:layout_gravity="center"
+                android:clickable="false"/>
 
             <RelativeLayout
                 android:id="@+id/seekBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 >
                 <SeekBar
                     android:id="@+id/seekBar"
@@ -108,25 +119,27 @@
                     android:layout_alignParentRight="true"
                     android:textColor="@color/black"
                     />
+
+                <ImageView
+                    android:id="@+id/playBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/play"
+                    android:layout_marginTop="20dp"
+                    android:visibility="invisible"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/TotalTime"
+                    />
+                <ImageView
+                    android:id="@+id/pauseBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/pause"
+                    android:layout_marginTop="20dp"
+                    android:visibility="visible"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/TotalTime"
+                    />
             </RelativeLayout>
-
-
-            <ImageView
-                android:id="@+id/playBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/play"
-                android:layout_marginTop="20dp"
-                android:visibility="invisible"
-                />
-            <ImageView
-                android:id="@+id/pauseBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/pause"
-                android:layout_marginTop="-40dp"
-                android:visibility="visible"
-                />
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </layout>
