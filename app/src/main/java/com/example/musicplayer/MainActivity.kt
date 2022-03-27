@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         val lyricAdapter = LyricAdapter(this,lyricList)
         val recyclerView = findViewById<RecyclerView>(R.id.lyrics)
         val image = findViewById<ImageView>(R.id.image)
-        var check = false
+        var lyricSelectedMode = false
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             var progress: Int?= null
@@ -97,8 +97,8 @@ class MainActivity : AppCompatActivity() {
         val params = recyclerView.layoutParams
         params.height = 350
         recyclerView.layoutParams = params
-        val closeBtn = findViewById<Button>(R.id.closeBtn)
-        val toggleBtn = findViewById<Button>(R.id.toggleBtn)
+        val closeBtn = findViewById<ImageButton>(R.id.closeBtn)
+        val toggleBtn = findViewById<ImageButton>(R.id.toggleBtn)
         lyricAdapter.clicked = object : LyricAdapter.Clicked{
             override fun onClick(view: View, time: Int) {
                 Log.d("","hi")
@@ -116,34 +116,36 @@ class MainActivity : AppCompatActivity() {
                 }
                 else
                 {
-                    closeBtn.visibility = GONE
-                    toggleBtn.visibility = GONE
-                    params.height = 350
-                    recyclerView.layoutParams = params
-                    title.visibility = VISIBLE
-                    singer.visibility = VISIBLE
-                    album.visibility = VISIBLE
-                    image.visibility = VISIBLE
+                    if(lyricSelectedMode){
+                        playingTime.text = milisecondsToTime(time.toLong()/1000.toLong())
+                        mediaPlayer.seekTo(time)
+                    }
                 }
-                /*if(check && image.visibility == 8){
-                    playingTime.text = milisecondsToTime(time.toLong()/1000.toLong())
-                    mediaPlayer.seekTo(time)
-                }else{
-                    //
-                    check = false
-                    params.height = 350
-                    recyclerView.layoutParams = params
-                }*/
             }
 
         }
         recyclerView.adapter = lyricAdapter
 
-        /*image.setOnClickListener {
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+        closeBtn.setOnClickListener {
+            closeBtn.visibility = GONE
+            toggleBtn.visibility = GONE
+            params.height = 350
             recyclerView.layoutParams = params
-            image.visibility = GONE
-        }*/
+            title.visibility = VISIBLE
+            singer.visibility = VISIBLE
+            album.visibility = VISIBLE
+            image.visibility = VISIBLE
+            lyricSelectedMode = false
+            toggleBtn.setImageResource(R.drawable.notselected)
+        }
+
+        toggleBtn.setOnClickListener { lyricSelectedMode = !lyricSelectedMode
+            if(lyricSelectedMode){
+                toggleBtn.setImageResource(R.drawable.selected)
+            }else{
+                toggleBtn.setImageResource(R.drawable.notselected)
+            }
+        }
         class MusicThread : Thread() {
             override fun run() {
                 while(mediaPlayer.isPlaying){
