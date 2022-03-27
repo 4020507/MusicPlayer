@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="lyric"
+            type="com.example.musicplayer.model.Lyric" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_centerHorizontal="true"
+            android:text="@{lyric.lyric}"
+            android:gravity="center"
+            android:textColor="@{lyric.highlighted?  0xFF000000 : 0xFFD2B48C}"
+            highlighted="@{lyric.highlighted}"
+            highlightedSize="@{lyric.highlighted}"/>
+    </RelativeLayout>
+</layout>
